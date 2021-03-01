@@ -32,14 +32,14 @@ public class PersonRepositoryTest {
         String firstName="John";
         String lastName="Boyd";
 
-        Person personDetails=new Person(firstName,lastName);
+        Person abstractPersonDetails =new Person(firstName,lastName);
 
         //WHEN
-        Person person=personService.save(personDetails);
+        Person abstractPerson =personService.save(abstractPersonDetails);
 
         //THEN
-        assertThat(person.getFirstName()).isEqualTo("John");
-        assertThat(person.getLastName()).isEqualTo("Boyd");
+        assertThat(abstractPerson.getFirstName()).isEqualTo("John");
+        assertThat(abstractPerson.getLastName()).isEqualTo("Boyd");
 
     }
 
@@ -49,10 +49,10 @@ public class PersonRepositoryTest {
         String firstName="John";
         String lastName="Boyd";
 
-        Person personDetails=new Person(firstName,lastName);
+        Person abstractPersonDetails =new Person(firstName,lastName);
 
         //WHEN
-        ResponseEntity responseEntity =personService.updatePerson(firstName,lastName,personDetails);
+        ResponseEntity responseEntity =personService.updatePerson(firstName,lastName, abstractPersonDetails);
         int obj = responseEntity.getStatusCodeValue();
 
         //THEN

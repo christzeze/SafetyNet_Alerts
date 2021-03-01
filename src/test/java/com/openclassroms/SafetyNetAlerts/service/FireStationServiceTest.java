@@ -24,9 +24,6 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc
 
 public class FireStationServiceTest {
-    private List<Person> persons;
-    private List<FireStation> stations;
-    private List<MedicalRecord> medicalRecords;
 
     @Autowired
     PersonServiceImpl personServiceImpl;
@@ -36,10 +33,6 @@ public class FireStationServiceTest {
 
     @Autowired
     FireStationServiceImpl fireStationServiceImpl;
-
-    @MockBean
-    private MedicalRecordServiceImpl medicalRecordServiceImpl2;
-
 
     @MockBean
     private PersonRepository personRepository;
@@ -64,14 +57,14 @@ public class FireStationServiceTest {
     Person tessaCarman = new Person(7, "Tessa", "Carman", "834 Binoc Ave", "Culver", "97451", "841-874-6512", "tenz@email.com");
     Person peterDuncan = new Person(8, "Peter", "Duncan", "644 Gershwin Cir", "Culver", "97451", "841-874-6512", "jaboyd@email.com");
 
-    MedicalRecord johnMedicalRecord = new MedicalRecord(1, 1, LocalDate.of(1984, 3, 6), medications, allergies);
-    MedicalRecord jacobBoydMedicalRecord = new MedicalRecord(2, 2, LocalDate.of(1989, 3, 6), medications, allergies);
-    MedicalRecord tenleyBoydMedicalRecord = new MedicalRecord(3, 3, LocalDate.now().minus(8, ChronoUnit.YEARS), medications, allergies);
-    MedicalRecord rogerBoydMedicalRecord = new MedicalRecord(4, 4, LocalDate.now().minus(3, ChronoUnit.YEARS), medications, allergies);
-    MedicalRecord feliciaBoydMedicalRecord = new MedicalRecord(5, 5, LocalDate.of(1986, 1, 8), medications, allergies);
-    MedicalRecord jonathanMarrackMedicalRecord = new MedicalRecord(6, 6, LocalDate.of(1989, 1, 3), medications, allergies);
-    MedicalRecord tessaCarmanMedicalRecord = new MedicalRecord(7, 7, LocalDate.of(2012, 2, 18), medications, allergies);
-    MedicalRecord peterDuncanMedicalRecord = new MedicalRecord(8, 8, LocalDate.of(2000, 9, 6), medications, allergies);
+    MedicalRecord johnMedicalRecord = new MedicalRecord(1, johnBoyd, LocalDate.of(1984, 3, 6), medications, allergies);
+    MedicalRecord jacobBoydMedicalRecord = new MedicalRecord(2, jacobBoyd, LocalDate.of(1989, 3, 6), medications, allergies);
+    MedicalRecord tenleyBoydMedicalRecord = new MedicalRecord(3, tenleyBoyd, LocalDate.now().minus(8, ChronoUnit.YEARS), medications, allergies);
+    MedicalRecord rogerBoydMedicalRecord = new MedicalRecord(4, rogerBoyd, LocalDate.now().minus(3, ChronoUnit.YEARS), medications, allergies);
+    MedicalRecord feliciaBoydMedicalRecord = new MedicalRecord(5, feliciaBoyd, LocalDate.of(1986, 1, 8), medications, allergies);
+    MedicalRecord jonathanMarrackMedicalRecord = new MedicalRecord(6, jonathanMarrack, LocalDate.of(1989, 1, 3), medications, allergies);
+    MedicalRecord tessaCarmanMedicalRecord = new MedicalRecord(7, tessaCarman, LocalDate.of(2012, 2, 18), medications, allergies);
+    MedicalRecord peterDuncanMedicalRecord = new MedicalRecord(8, peterDuncan, LocalDate.of(2000, 9, 6), medications, allergies);
 
 
     FireStation culverSt=new FireStation(1, "1509 Culver St", 3);
@@ -92,12 +85,12 @@ public class FireStationServiceTest {
         //when(personRepository.findAll()).thenReturn(lafamilleBoydCarman);
         when(fireStationRepository.findStationByStation(stationNumber)).thenReturn(listeofStations);
         when(personRepository.findPersonByAddress(address, Sort.by("address"))).thenReturn(lafamilleBoydCarman);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(1)).thenReturn(johnMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(2)).thenReturn(jacobBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(3)).thenReturn(tenleyBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(4)).thenReturn(rogerBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(5)).thenReturn(feliciaBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(7)).thenReturn(tessaCarmanMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(1)).thenReturn(johnMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(2)).thenReturn(jacobBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(3)).thenReturn(tenleyBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(4)).thenReturn(rogerBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(5)).thenReturn(feliciaBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(7)).thenReturn(tessaCarmanMedicalRecord);
 
         // WHEN
         FireStationCoverage station = fireStationServiceImpl.getFireStationCoverage(stationNumber);
@@ -137,12 +130,12 @@ public class FireStationServiceTest {
         List<FireStation> listeofStations = Arrays.asList(culverSt, th15St);
         when(fireStationRepository.findStationByStation(stationNumber)).thenReturn(listeofStations);
         when(personRepository.findPersonByAddress(address, Sort.by("address"))).thenReturn(lafamilleBoydCarman);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(1)).thenReturn(johnMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(2)).thenReturn(jacobBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(3)).thenReturn(tenleyBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(4)).thenReturn(rogerBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(5)).thenReturn(feliciaBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(7)).thenReturn(tessaCarmanMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(1)).thenReturn(johnMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(2)).thenReturn(jacobBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(3)).thenReturn(tenleyBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(4)).thenReturn(rogerBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(5)).thenReturn(feliciaBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(7)).thenReturn(tessaCarmanMedicalRecord);
 
         // WHEN
         List<FireStationsFlood> listOfInformations=fireStationServiceImpl.getCoverageFireStationForSeveralFireStations(stationNumbers);

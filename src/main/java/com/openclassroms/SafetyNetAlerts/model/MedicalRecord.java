@@ -9,7 +9,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -18,9 +17,9 @@ public class MedicalRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int idPerson;
-    //private String firstName;
-    //private String lastName;
+    @OneToOne
+    @JoinColumn(name = "personId", referencedColumnName = "id")
+    private Person person;
     @JsonFormat(pattern="MM/dd/yyyy")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
@@ -30,14 +29,9 @@ public class MedicalRecord {
     @ElementCollection
     private List<String> allergies;
 
-    /**
-     * Constructeur
-     */
-    public MedicalRecord(int id, int idPerson, LocalDate birthdate, List<String> medications, List<String> allergies) {
+    public MedicalRecord(int id, Person abstractPerson, LocalDate birthdate, List<String> medications, List<String> allergies) {
         this.id=id;
-        //this.firstName = firstName;
-        //this.lastName = lastName;
-        this.idPerson=idPerson;
+        this.person= abstractPerson;
         this.birthdate = birthdate;
         this.medications = medications;
         this.allergies = allergies;

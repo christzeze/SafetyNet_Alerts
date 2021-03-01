@@ -1,15 +1,11 @@
 package com.openclassroms.SafetyNetAlerts.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class Person {
     @Id
@@ -22,17 +18,15 @@ public class Person {
     private String zip;
     private String phone;
     private String email;
+    private long age;
+    @ElementCollection(targetClass = String.class)
+    private List<String> medications;
+    @ElementCollection(targetClass = String.class)
+    private List<String> allergies;
+    @ElementCollection(targetClass = String.class)
+    private List<String> station;
 
-
-    public Person(int id, String firstName, String lastName, String address, String city, String zip, String phone, String email) {
-        this.id=id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.city = city;
-        this.zip = zip;
-        this.phone = phone;
-        this.email = email;
+    public Person() {
     }
 
     public Person(String firstName, String lastName) {
@@ -40,19 +34,28 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public Person(){}
+    public Person(String firstName, String lastName, long age) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+    }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                ", city='" + city + '\'' +
-                ", zip='" + zip + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public Person(String firstName, String lastName, long age, List<String> medications, List<String> allergies) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.medications = medications;
+        this.allergies = allergies;
+    }
+
+    public Person(int id, String firstName, String lastName, String address, String city, String zip, String phone, String mail) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.email = mail;
+        this.zip = zip;
+        this.address = address;
+        this.phone = phone;
     }
 }

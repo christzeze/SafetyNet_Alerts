@@ -1,7 +1,9 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
 import com.openclassroms.SafetyNetAlerts.model.*;
-import com.openclassroms.SafetyNetAlerts.repository.*;
+import com.openclassroms.SafetyNetAlerts.repository.FireStationRepository;
+import com.openclassroms.SafetyNetAlerts.repository.MedicalRecordRepository;
+import com.openclassroms.SafetyNetAlerts.repository.PersonRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +32,8 @@ public class FireStationServiceImpl implements FireStationService {
     @Autowired
     private CalculateAgeService calculateAgeService;
 
-    @Autowired
-    private PersonFullRepository personFullRepository;
-
     //@Autowired
     //private FireStationRepositoryImpl fireStationRepositoryImpl;
-
 
 
     /**
@@ -46,7 +44,7 @@ public class FireStationServiceImpl implements FireStationService {
     }
 
     /**
-            * Logger
+     * Logger
      */
     private static final Logger logger = LogManager.getLogger("PersonServiceImpl");
 
@@ -77,8 +75,8 @@ public class FireStationServiceImpl implements FireStationService {
      */
     @Override
     public void deleteFireStationByStationNumber(int station) {
-        List<FireStation> fireStations=fireStationRepository.findStationByStation(station);
-        for(FireStation fireStation:fireStations) {
+        List<FireStation> fireStations = fireStationRepository.findStationByStation(station);
+        for (FireStation fireStation : fireStations) {
             fireStationRepository.delete(fireStation);
         }
     }
@@ -88,11 +86,11 @@ public class FireStationServiceImpl implements FireStationService {
      */
     @Override
     public ResponseEntity deleteFireStationByAddress(String address) {
-        List<FireStation> fireStations=fireStationRepository.findStationByAddress(address);
-        for(FireStation fireStation:fireStations) {
+        List<FireStation> fireStations = fireStationRepository.findStationByAddress(address);
+        for (FireStation fireStation : fireStations) {
             fireStationRepository.delete(fireStation);
         }
-        if(fireStations!=null) {
+        if (fireStations != null) {
             logger.info("delete fire station succeeded");
             return ResponseEntity.ok(fireStationRepository);
         } else {
@@ -107,13 +105,13 @@ public class FireStationServiceImpl implements FireStationService {
     @Override
     public ResponseEntity updateFireStation(String address, FireStation fireStationDetails) {
 
-        List<FireStation> fireStations=fireStationRepository.findStationByAddress(address);
-        for(FireStation fireStation:fireStations) {
+        List<FireStation> fireStations = fireStationRepository.findStationByAddress(address);
+        for (FireStation fireStation : fireStations) {
             fireStation.setStation(fireStationDetails.getStation());
             fireStation.setAddress(fireStationDetails.getAddress());
-            final FireStation updateFireStation=fireStationRepository.save(fireStation);
+            final FireStation updateFireStation = fireStationRepository.save(fireStation);
         }
-        if(fireStations!=null) {
+        if (fireStations != null) {
             logger.info("Update fire station succeeded");
             return ResponseEntity.ok(fireStationRepository);
         } else {
@@ -124,34 +122,35 @@ public class FireStationServiceImpl implements FireStationService {
 
     /**
      * Liste des personnes couvertes par une caserne de pompiers
+     *
      * @return
      */
     @Override
     public FireStationCoverage getFireStationCoverage(int station) {
-        int childCounter=0;
-        int adultCounter=0;
+        int childCounter = 0;
+        int adultCounter = 0;
 
-        FireStationCoverage fireStationCoverage=new FireStationCoverage();
-        List<PersonInfosFull> fireStationPersons = new ArrayList<>();
-        List<Person> personByStation = new ArrayList<>();
+        FireStationCoverage fireStationCoverage = new FireStationCoverage();
+        List<Person> fireStationPersons = new ArrayList<>();
+        List<Person> PersonByStation = new ArrayList<>();
 
-        List<FireStation> addressCoveredByStation=fireStationRepository.findStationByStation(station);
+        List<FireStation> addressCoveredByStation = fireStationRepository.findStationByStation(station);
 
-        for (FireStation a:addressCoveredByStation) {
-            List<Person> personByAddress = personService.findPersonByAddress(a.getAddress());
-            personByStation.addAll(personByAddress);
+        for (FireStation a : addressCoveredByStation) {
+            List<Person> PersonByAddresses = personService.findPersonByAddress(a.getAddress());
+            PersonByStation.addAll(PersonByAddresses);
         }
-        for(Person person:personByStation) {
-                PersonInfosFull infoPersonFull = personService.getFullInformationPerson(person);
-                MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
-                int age=calculateAgeService.calculateAge(medicalRecord.getBirthdate());
-                if(calculateAgeService.isChild(medicalRecord)) {
-                    childCounter += 1;
-                } else {
-                    adultCounter += 1;
-                }
-            fireStationPersons.add(infoPersonFull);
+        for (Person Person : PersonByStation) {
+            Person infoPersonFull = personService.getFullInformationPerson(Person);
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
+            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+            if (calculateAgeService.isChild(medicalRecord)) {
+                childCounter += 1;
+            } else {
+                adultCounter += 1;
             }
+            fireStationPersons.add(infoPersonFull);
+        }
 
         fireStationCoverage.setFireStationPersons(fireStationPersons);
         fireStationCoverage.setChildCount(childCounter);
@@ -164,34 +163,35 @@ public class FireStationServiceImpl implements FireStationService {
 
     /**
      * Liste des numéros de téléphones des personnes desservies par une caserne de pompiers
+     *
      * @return
      */
     @Override
     public List<PhoneCoverage> getPhoneNumbersByStation(int station) {
 
-        List<PhoneCoverage>listOfPerson=new ArrayList<>();
-        boolean isAvailable=false;
+        List<PhoneCoverage> listOfPerson = new ArrayList<>();
+        boolean isAvailable = false;
 
 
-        List<FireStation> coveredStation=fireStationRepository.findStationByStation(station);
+        List<FireStation> coveredStation = fireStationRepository.findStationByStation(station);
 
-        for(FireStation fireStation:coveredStation) {
+        for (FireStation fireStation : coveredStation) {
 
             Sort sortKey = Sort.by("address");
-            List<Person> personByAddress = personRepository.findPersonByAddress(fireStation.getAddress(), sortKey);
+            List<Person> PersonByAddresses = personRepository.findPersonByAddress(fireStation.getAddress(), sortKey);
 
-            for (Person person : personByAddress) {
+            for (Person Person : PersonByAddresses) {
                 PhoneCoverage phoneCoverage = new PhoneCoverage();
-                phoneCoverage.setPhone(person.getPhone());
-                for(int i=0;i<listOfPerson.size();i++) {
-                    if(person.getPhone().equals(listOfPerson.get(i).getPhone())) {
-                        isAvailable=true;
+                phoneCoverage.setPhone(Person.getPhone());
+                for (int i = 0; i < listOfPerson.size(); i++) {
+                    if (Person.getPhone().equals(listOfPerson.get(i).getPhone())) {
+                        isAvailable = true;
                     }
                 }
-                if(!isAvailable) {
+                if (!isAvailable) {
                     listOfPerson.add(phoneCoverage);
                 }
-                isAvailable=false;
+                isAvailable = false;
 
             }
 
@@ -202,34 +202,35 @@ public class FireStationServiceImpl implements FireStationService {
 
     /**
      * Liste des foyers desservis par une liste de casernes de pompiers
+     *
      * @return
      */
     @Override
     public List<FireStationsFlood> getCoverageFireStationForSeveralFireStations(String stations) {
-        String myStations=String.valueOf(stations);
+        String myStations = String.valueOf(stations);
         List<String> ListStations = new ArrayList<String>(Arrays.asList(myStations.split(",")));
-        List<FireStationsFlood>listOfPerson=new ArrayList<>();
+        List<FireStationsFlood> listOfPerson = new ArrayList<>();
 
         for (String station : ListStations) {
 
-            List<String> listStations2=new ArrayList<>();
-            int stationNumber=Integer.parseInt(station);
+            List<String> listStations2 = new ArrayList<>();
+            int stationNumber = Integer.parseInt(station);
             List<FireStation> coveredStation = fireStationRepository.findStationByStation(stationNumber);
             for (FireStation fireStation : coveredStation) {
-                List<Person> personByAddress = personRepository.findPersonByAddress(fireStation.getAddress(),Sort.by("address"));
-                for (Person person : personByAddress) {
-                    MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+                List<Person> PersonByAddresses = personRepository.findPersonByAddress(fireStation.getAddress(), Sort.by("address"));
+                for (Person Person : PersonByAddresses) {
+                    MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
                     //MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(),person.getLastName());
-                    FireStationsFlood fireStationsFlood=new FireStationsFlood();
-                    fireStationsFlood.setFirstName(person.getFirstName());
-                    fireStationsFlood.setLastName(person.getLastName());
-                    fireStationsFlood.setAddress(person.getAddress());
-                    fireStationsFlood.setPhone(person.getPhone());
-                    int age=calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+                    FireStationsFlood fireStationsFlood = new FireStationsFlood();
+                    fireStationsFlood.setFirstName(Person.getFirstName());
+                    fireStationsFlood.setLastName(Person.getLastName());
+                    fireStationsFlood.setAddress(Person.getAddress());
+                    fireStationsFlood.setPhone(Person.getPhone());
+                    int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
                     fireStationsFlood.setAge(age);
                     fireStationsFlood.setMedications(medicalRecord.getMedications());
                     fireStationsFlood.setAllergies(medicalRecord.getAllergies());
-                    for (FireStation a:coveredStation) {
+                    for (FireStation a : coveredStation) {
                         if (!listStations2.contains(String.valueOf(a.getStation()))) {
                             listStations2.add(String.valueOf(a.getStation()));
                         }

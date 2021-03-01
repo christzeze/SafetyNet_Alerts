@@ -1,8 +1,8 @@
 package com.openclassroms.SafetyNetAlerts.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
 import com.openclassroms.SafetyNetAlerts.model.*;
-import com.openclassroms.SafetyNetAlerts.service.PersonService;
 import com.openclassroms.SafetyNetAlerts.service.PersonServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,16 +36,12 @@ public class PersonControllerTest {
     @MockBean
     private PersonServiceImpl personServiceImpl;
 
-    @MockBean
-    private Person personMock;
-
-
     List<String> medications = Arrays.asList("aznol:350mg", "hydrapermazol:100mg");
     List<String> allergies = Arrays.asList("nillacilan");
     List<String> stations = Arrays.asList("3");
 
     PersonInfos johnBoyd = new PersonInfos("John", "Boyd");
-    PersonInfosFull johnBoydFull = new PersonInfosFull("John", "Boyd", 36);
+    Person johnBoydFull = new Person("John", "Boyd", 36);
     Child jacobBoyd = new Child("Jacob", "Boyd", 3);
     Email johnBoydEmail = new Email("test@gmail.com", "Culver");
 
@@ -99,7 +94,7 @@ public class PersonControllerTest {
         //GIVEN :
 
         String address = "1509 Culver St";
-        List<PersonInfosFull> personInfosMock = Collections.singletonList(johnBoydFull);
+        List<Person> personInfosMock = Collections.singletonList(johnBoydFull);
 
         when(personServiceImpl.getAllInformationsForPersonnAtAnAddress(address)).thenReturn(personInfosMock);
 
@@ -140,13 +135,13 @@ public class PersonControllerTest {
     public void PersonController_shouldReturnStatusOkWhenSave() throws Exception {
         //GIVEN
 
-        Person person = new Person("John", "Boyd");
+        Person abstractPerson = new Person("John", "Boyd");
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(person);
+        String json = mapper.writeValueAsString(abstractPerson);
 
-        Person saved = new Person("John", "Boyd"); person.setId(1);
-        when(personServiceImpl.save(person)).thenReturn(saved);
+        Person saved = new Person("John", "Boyd"); abstractPerson.setId(1);
+        when(personServiceImpl.save(abstractPerson)).thenReturn(saved);
 
         mockMvc.perform(post("/person")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -161,10 +156,10 @@ public class PersonControllerTest {
     public void PersonController_shouldReturnStatusOkWhenUpdate() throws Exception {
         //GIVEN
 
-        Person person = new Person("John", "Boyd");
+        Person abstractPerson = new Person("John", "Boyd");
 
         ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(person);
+        String json = mapper.writeValueAsString(abstractPerson);
 
         mockMvc.perform(put("/person?firstName=John&lastName=Boyd\"")
                 .contentType(MediaType.APPLICATION_JSON)

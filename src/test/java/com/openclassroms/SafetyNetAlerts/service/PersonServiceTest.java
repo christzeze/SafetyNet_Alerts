@@ -1,5 +1,6 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
+import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
 import com.openclassroms.SafetyNetAlerts.model.*;
 import com.openclassroms.SafetyNetAlerts.repository.MedicalRecordRepository;
 import com.openclassroms.SafetyNetAlerts.repository.PersonRepository;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 
 public class PersonServiceTest {
-    private List<Person> persons;
+    private List<Person> abstractPeople;
     private List<FireStation> stations;
     private List<MedicalRecord> medicalRecords;
 
@@ -55,21 +56,12 @@ public class PersonServiceTest {
     Person tenleyBoyd = new Person(3, "Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "tenz@email.com");
     Person rogerBoyd = new Person(4, "Roger", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com");
     Person feliciaBoyd = new Person(5, "Felicia", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6544", "jaboyd@email.com");
-    Person jonathanMarrack = new Person(6, "Jonathan", "Marrack", "29 15th St", "Culver", "97451", "841-874-6513", "drk@email.com");
-    Person tessaCarman = new Person(7, "Tessa", "Carman", "834 Binoc Ave", "Culver", "97451", "841-874-6512", "tenz@email.com");
-    Person peterDuncan = new Person(8, "Peter", "Duncan", "644 Gershwin Cir", "Culver", "97451", "841-874-6512", "jaboyd@email.com");
-    Person jacquesMartin = new Person(24, "Jacques", "Martin", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com");
-    Person paulDupond = new Person(29, "Paul", "Dupond", "1509 Culver St", "Culver", "97451", "841-874-6512", "jaboyd@email.com");
 
-    MedicalRecord johnMedicalRecord = new MedicalRecord(1, 1, LocalDate.of(1984, 3, 6), medications, allergies);
-    MedicalRecord jacobBoydMedicalRecord = new MedicalRecord(2, 2, LocalDate.of(1989, 3, 6), medications, allergies);
-    MedicalRecord tenleyBoydMedicalRecord = new MedicalRecord(3, 3, LocalDate.now().minus(8, ChronoUnit.YEARS), medications, allergies);
-    MedicalRecord rogerBoydMedicalRecord = new MedicalRecord(4, 4, LocalDate.now().minus(3, ChronoUnit.YEARS), medications, allergies);
-    MedicalRecord feliciaBoydMedicalRecord = new MedicalRecord(5, 5, LocalDate.of(1986, 1, 8), medications, allergies);
-    MedicalRecord jonathanMarrackMedicalRecord = new MedicalRecord(6, 6, LocalDate.of(1989, 1, 3), medications, allergies);
-    MedicalRecord tessaCarmanMedicalRecord = new MedicalRecord(7, 7, LocalDate.of(2012, 2, 18), medications, allergies);
-    MedicalRecord peterDuncanMedicalRecord = new MedicalRecord(8, 8, LocalDate.of(2000, 9, 6), medications, allergies);
-    MedicalRecord jacquesMartinMedicalRecord=new MedicalRecord(LocalDate.of(1984, 1, 1),medications,allergies);
+    MedicalRecord johnMedicalRecord = new MedicalRecord(1, johnBoyd, LocalDate.of(1984, 3, 6), medications, allergies);
+    MedicalRecord jacobBoydMedicalRecord = new MedicalRecord(2, jacobBoyd, LocalDate.of(1989, 3, 6), medications, allergies);
+    MedicalRecord tenleyBoydMedicalRecord = new MedicalRecord(3, tenleyBoyd, LocalDate.now().minus(8, ChronoUnit.YEARS), medications, allergies);
+    MedicalRecord rogerBoydMedicalRecord = new MedicalRecord(4, rogerBoyd, LocalDate.now().minus(3, ChronoUnit.YEARS), medications, allergies);
+    MedicalRecord feliciaBoydMedicalRecord = new MedicalRecord(5, feliciaBoyd, LocalDate.of(1986, 1, 8), medications, allergies);
 
     FireStation culverSt=new FireStation(1, "1509 Culver St", 3);
     FireStation th15St=new FireStation(2, "29 15th St", 2);
@@ -86,11 +78,11 @@ public class PersonServiceTest {
         String address = "1509 Culver St";
         List<Person> lafamilleBoyd = Arrays.asList(johnBoyd, jacobBoyd, tenleyBoyd, rogerBoyd, feliciaBoyd);
         when(personRepository.findPersonByAddress(address, Sort.by("address"))).thenReturn(lafamilleBoyd);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(1)).thenReturn(johnMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(2)).thenReturn(jacobBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(3)).thenReturn(tenleyBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(4)).thenReturn(rogerBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(5)).thenReturn(feliciaBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(1)).thenReturn(johnMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(2)).thenReturn(jacobBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(3)).thenReturn(tenleyBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(4)).thenReturn(rogerBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(5)).thenReturn(feliciaBoydMedicalRecord);
 
         // WHEN
         List<Child> childList = personServiceImpl.getlistOfChildren(address);
@@ -126,14 +118,14 @@ public class PersonServiceTest {
         List<Person> lafamilleBoyd = Arrays.asList(johnBoyd, jacobBoyd, tenleyBoyd, rogerBoyd, feliciaBoyd);
         when(personRepository.findPersonByAddress(address, Sort.by("address"))).thenReturn(lafamilleBoyd);
         when(personRepository.findPersonByAddress(address, Sort.by("address"))).thenReturn(lafamilleBoyd);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(1)).thenReturn(johnMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(2)).thenReturn(jacobBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(3)).thenReturn(tenleyBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(4)).thenReturn(rogerBoydMedicalRecord);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(5)).thenReturn(feliciaBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(1)).thenReturn(johnMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(2)).thenReturn(jacobBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(3)).thenReturn(tenleyBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(4)).thenReturn(rogerBoydMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(5)).thenReturn(feliciaBoydMedicalRecord);
 
         //WHEN
-        List<PersonInfosFull> AllInformationsList=personServiceImpl.getAllInformationsForPersonnAtAnAddress(address);
+        List<Person> AllInformationsList=personServiceImpl.getAllInformationsForPersonnAtAnAddress(address);
 
         //THEN
         assertThat(AllInformationsList.size()).isEqualTo(5);
@@ -149,7 +141,7 @@ public class PersonServiceTest {
         String lastName="Boyd";
         List<Person> lafamilleBoyd = Arrays.asList(johnBoyd);
         when(personRepository.findPersonByFirstNameAndLastName(firstName,lastName)).thenReturn(lafamilleBoyd);
-        when(medicalRecordRepository.findFirstMedicalRecordByIdPerson(1)).thenReturn(johnMedicalRecord);
+        when(medicalRecordRepository.findFirstMedicalRecordByPersonId(1)).thenReturn(johnMedicalRecord);
 
         //WHEN
         List<PersonInfos> allInformationsList=personServiceImpl.getlistPersonsByFirstNameAndLastName(firstName,lastName);

@@ -1,5 +1,6 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
+import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
 import com.openclassroms.SafetyNetAlerts.model.*;
 import com.openclassroms.SafetyNetAlerts.repository.FireStationRepository;
 import com.openclassroms.SafetyNetAlerts.repository.MedicalRecordRepository;
@@ -61,8 +62,8 @@ public class PersonServiceImpl implements PersonService {
      * Sauvegarde d'une personne dans la base
      */
     @Override
-    public Person save(Person person) {
-        Person savedPerson = personRepository.save(person);
+    public Person save(Person Person) {
+        Person savedPerson = personRepository.save(Person);
         logger.info("Person saved {}", savedPerson);
         return savedPerson;
     }
@@ -73,25 +74,24 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Iterable<Person> save(List<Person> people) {
         return personRepository.saveAll(people);
-
     }
 
     @Override
     public ResponseEntity deletePerson(String firstName, String lastName) {
 
-        List<Person> persons = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
-        for(Person person:persons){
-            MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        for (Person Person : abstractPeople) {
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
             medicalRecordRepository.delete(medicalRecord);
         }
-        for(Person person:persons) {
-            personRepository.delete(person);
+        for (Person Person : abstractPeople) {
+            personRepository.delete(Person);
         }
         logger.info("Update  person(s) succeeded");
-        if (persons!=null) {
+        if (abstractPeople != null) {
             logger.info("person deleted");
             return ResponseEntity.ok(personRepository);
-        }else{
+        } else {
             logger.info("person not deleted");
             return ResponseEntity.badRequest()
                     .body(personRepository);
@@ -100,21 +100,21 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ResponseEntity updatePerson(String firstName, String lastName, Person personDetails) {
-        List<Person> persons=personRepository.findPersonByFirstNameAndLastName(firstName,lastName);
-        Person updatePerson=null;
-        for(Person person:persons) {
-            person.setPhone(personDetails.getPhone());
-            person.setAddress(personDetails.getAddress());
-            person.setCity(personDetails.getCity());
-            person.setEmail(personDetails.getEmail());
-            person.setZip(personDetails.getZip());
-            updatePerson=personRepository.save(person);
+    public ResponseEntity updatePerson(String firstName, String lastName, Person PersonDetails) {
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        Person updatePerson = null;
+        for (Person Person : abstractPeople) {
+            Person.setPhone(PersonDetails.getPhone());
+            Person.setAddress(PersonDetails.getAddress());
+            Person.setCity(PersonDetails.getCity());
+            Person.setEmail(PersonDetails.getEmail());
+            Person.setZip(PersonDetails.getZip());
+            updatePerson = personRepository.save(Person);
         }
-        if (updatePerson!=null) {
+        if (updatePerson != null) {
             logger.info("person update");
             return ResponseEntity.ok(personRepository);
-        }else{
+        } else {
             logger.info("person not update");
             return ResponseEntity.badRequest()
                     .body(personRepository);
@@ -137,25 +137,25 @@ public class PersonServiceImpl implements PersonService {
         List<PersonInfos> listPersonsInfo = new ArrayList<>();
         List<String> listStations = new ArrayList<>();
 
-        List<Person> persons = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
 
-        for (Person person : persons) {
-            MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+        for (Person Person : abstractPeople) {
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
 
-            List<FireStation> stations = fireStationRepository.findStationByAddress(person.getAddress());
+            List<FireStation> stations = fireStationRepository.findStationByAddress(Person.getAddress());
 
-            if(medicalRecord==null) {
-                logger.error("Person " + person + " don't exist");
+            if (medicalRecord == null) {
+                logger.error("Person " + Person + " don't exist");
             }
 
-            int age=calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
 
             PersonInfos personInfos = new PersonInfos();
-            personInfos.setFirstName(person.getFirstName());
-            personInfos.setLastName(person.getLastName());
-            personInfos.setAddress(person.getAddress());
-            personInfos.setEmail(person.getEmail());
-            personInfos.setPhone(person.getPhone());
+            personInfos.setFirstName(Person.getFirstName());
+            personInfos.setLastName(Person.getLastName());
+            personInfos.setAddress(Person.getAddress());
+            personInfos.setEmail(Person.getEmail());
+            personInfos.setPhone(Person.getPhone());
             personInfos.setAge(age);
 
             for (FireStation a : stations) {
@@ -181,21 +181,21 @@ public class PersonServiceImpl implements PersonService {
         //int age = 0;
 
         Sort sortKey = Sort.by("address");
-        List<Person> persons = personRepository.findPersonByAddress(address, sortKey);
+        List<Person> abstractPeople = personRepository.findPersonByAddress(address, sortKey);
 
-        for (Person person : persons) {
-            MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+        for (Person Person : abstractPeople) {
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
             //MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
             if (medicalRecord == null) {
-                logger.error("Person " + person + " don't exist");
+                logger.error("Person " + Person + " don't exist");
             }
             if (calculateAgeService.isAdult(medicalRecord)) {
-                adults.add(person);
+                adults.add(Person);
             } else {
-                int age=calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+                int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
                 Child child = new Child();
-                child.setFirstName(person.getFirstName());
-                child.setLastName(person.getLastName());
+                child.setFirstName(Person.getFirstName());
+                child.setLastName(Person.getLastName());
                 child.setAge(age);
                 child.setHouseMembers(adults);
                 children.add(child);
@@ -206,34 +206,34 @@ public class PersonServiceImpl implements PersonService {
         return children;
     }
 
-    public List<PersonInfosFull> getAllInformationsForPersonnAtAnAddress(String address) {
+    public List<Person> getAllInformationsForPersonnAtAnAddress(String address) {
         List<String> allergies = null;
         List<String> medications = null;
-        List<PersonInfosFull> listPersonsInfo = new ArrayList<>();
+        List<Person> listPersonsInfo = new ArrayList<>();
         List<String> listStations = new ArrayList<>();
 
         Sort sortKey = Sort.by("address");
-        List<Person> persons = personRepository.findPersonByAddress(address, sortKey);
+        List<Person> abstractPeople = personRepository.findPersonByAddress(address, sortKey);
 
 
-        for (Person person : persons) {
-            MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+        for (Person Person : abstractPeople) {
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
             //MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
-            List<FireStation> fireStations = fireStationRepository.findStationByAddress(person.getAddress());
+            List<FireStation> fireStations = fireStationRepository.findStationByAddress(Person.getAddress());
 
 
             allergies = medicalRecord.getAllergies();
             medications = medicalRecord.getMedications();
-            int age=calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
 
 
-            PersonInfosFull personInfosFull = new PersonInfosFull();
+            Person personInfosFull = new Person();
 
-            personInfosFull.setFirstName(person.getFirstName());
-            personInfosFull.setLastName(person.getLastName());
-            personInfosFull.setAddress(person.getAddress());
-            personInfosFull.setEmail(person.getEmail());
-            personInfosFull.setPhone(person.getPhone());
+            personInfosFull.setFirstName(Person.getFirstName());
+            personInfosFull.setLastName(Person.getLastName());
+            personInfosFull.setAddress(Person.getAddress());
+            personInfosFull.setEmail(Person.getEmail());
+            personInfosFull.setPhone(Person.getPhone());
 
 
             for (FireStation a : fireStations) {
@@ -257,17 +257,17 @@ public class PersonServiceImpl implements PersonService {
     }
 
 
-    public PersonInfosFull getFullInformationPerson(Person person) {
+    public Person getFullInformationPerson(Person Person) {
         List<String> listStations = new ArrayList<>();
 
-        PersonInfosFull result = new PersonInfosFull();
-        result.setFirstName(person.getFirstName());
-        result.setLastName(person.getLastName());
-        result.setAddress(person.getAddress());
-        result.setPhone(person.getPhone());
-        result.setEmail(person.getEmail());
+        Person result = new Person();
+        result.setFirstName(Person.getFirstName());
+        result.setLastName(Person.getLastName());
+        result.setAddress(Person.getAddress());
+        result.setPhone(Person.getPhone());
+        result.setEmail(Person.getEmail());
         //FireStation station=fireStationRepository.findStationByAddressForFireStation(person.getAddress());
-        List<FireStation> fireStations = fireStationRepository.findStationByAddress(person.getAddress());
+        List<FireStation> fireStations = fireStationRepository.findStationByAddress(Person.getAddress());
 
         for (FireStation a : fireStations) {
             if (!listStations.contains(String.valueOf(a.getStation()))) {
@@ -280,7 +280,7 @@ public class PersonServiceImpl implements PersonService {
         //MedicalRecord medicalRecord = medicalRecordServiceImpl2.getMedicalRecords(person.getFirstName(),person.getLastName());
         //List<MedicalRecord> medicalRecordList = medicalRecordRepository.findMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
         //MedicalRecord medicalRecord= medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
-        MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+        MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
         if (medicalRecord != null) {
             result.setAge(calculateAgeService.calculateAge(medicalRecord.getBirthdate()));
             //for (MedicalRecord medicalRecord : medicalRecordList) {
@@ -301,10 +301,10 @@ public class PersonServiceImpl implements PersonService {
     public List<Email> getEmailPerCity(String city) {
         List<Email> listOfPerson = new ArrayList<>();
         Iterable<Person> persons = personRepository.findPersonByCity(city);
-        for (Person person : persons) {
+        for (Person Person : persons) {
             Email email = new Email();
-            email.setEmail(person.getEmail());
-            email.setCity(person.getCity());
+            email.setEmail(Person.getEmail());
+            email.setCity(Person.getCity());
             listOfPerson.add(email);
         }
         logger.info("List of emails create");

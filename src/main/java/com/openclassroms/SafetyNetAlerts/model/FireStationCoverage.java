@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class FireStationCoverage {
-    List<PersonInfosFull> fireStationPersons;
+    List<Person> fireStationPersons;
     int adultCount;
     int childCount;
 }

@@ -9,12 +9,11 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
@@ -22,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class bReadJsonForMedicalRecord {
@@ -37,37 +35,29 @@ public class bReadJsonForMedicalRecord {
      */
     private List<MedicalRecord> allMedicalRecords;
 
+    private static final Logger logger = LogManager.getLogger("aReadJsonForPersons");
     private int idCounter;
 
     private MedicalRecordServiceImpl medicalRecordServiceImpl2;
+
 
     public bReadJsonForMedicalRecord(MedicalRecordServiceImpl medicalRecordServiceImpl2) {
         this.medicalRecordServiceImpl2 = medicalRecordServiceImpl2;
     }
 
-    /**
-     * Logger
-     */
-    private static final Logger logger = LogManager.getLogger("aReadJsonForPersons");
-
     @PostConstruct
-    public void initDataHandlerJsonFile() throws IOException, ParseException {
+    public void initDataHandlerJsonFile() {
         this.loadFile();
-        if (object == null) {
-
-        } else {
-
+        if (object != null) {
             shareData(this.object);
-
             initMedicalRecord();
-
         }
     }
 
     /**
      * Chargement des données JSON
      */
-    public void loadFile()  {
+    public void loadFile() {
         try {
             JSONParser jsonParser = new JSONParser();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./data.json");
@@ -91,8 +81,8 @@ public class bReadJsonForMedicalRecord {
      */
     public void initMedicalRecord() {
         if (medicalRecords != null) {
-            idCounter=1;
-            int idPerson=0;
+            idCounter = 1;
+            int idPerson = 0;
 
             Iterator<JSONObject> iterator = medicalRecords.iterator();
             while (iterator.hasNext()) {
@@ -102,22 +92,26 @@ public class bReadJsonForMedicalRecord {
                 String firstName = (String) medicalRecord.get("firstName");
                 String lastName = (String) medicalRecord.get("lastName");
 
-                List<Person> persons=personRepository.findPersonByFirstNameAndLastName(firstName,lastName);
-                for(Person person:persons) {
-                    idPerson=person.getId();
+                List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+                if (CollectionUtils.isEmpty(abstractPeople)) {
+                    logger.warn("Aucune personne, je saute cette étape {}", medicalRecord);
+                    continue;
                 }
+                // FIXME: on prend la dernière personne à cause des homonymes mais ce n'est pas bien
+                Person Person = abstractPeople.get(abstractPeople.size() - 1);
+
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
                 LocalDate birthdate = LocalDate.parse((String) medicalRecord.get("birthdate"), formatter);
-                List<String>  medications=(List<String>) medicalRecord.get("medications");
-                List<String>  allergies=(List<String>) medicalRecord.get("allergies");
+                List<String> medications = (List<String>) medicalRecord.get("medications");
+                List<String> allergies = (List<String>) medicalRecord.get("allergies");
                 //Extraction of data of medication and allergies
-                listeMedications = medications.stream().collect(Collectors.toCollection(ArrayList::new));
-                listeAllergies = allergies.stream().collect(Collectors.toCollection(ArrayList::new));
+                listeMedications = new ArrayList<>(medications);
+                listeAllergies = new ArrayList<>(allergies);
                 this.allMedicalRecords = new ArrayList<>();
-                MedicalRecord myMedicalRecord=new MedicalRecord(idCounter,idPerson, birthdate,listeMedications,listeAllergies);
+                MedicalRecord myMedicalRecord = new MedicalRecord(idCounter, Person, birthdate, listeMedications, listeAllergies);
                 allMedicalRecords.add(myMedicalRecord);
                 medicalRecordServiceImpl2.save(allMedicalRecords);
-                idCounter+=1;
+                idCounter += 1;
             }
 
             logger.info("Succes of loading Medical Records");

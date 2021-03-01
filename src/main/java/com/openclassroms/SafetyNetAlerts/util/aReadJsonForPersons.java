@@ -27,12 +27,11 @@ public class aReadJsonForPersons {
     /**
      * Liste des personnes de la base de données
      */
-    private List<Person> allPersons;
+    private List<Person> allAbstractPeople;
 
     private int idCounter;
 
     private PersonServiceImpl personServiceImpl;
-
 
 
     private aReadJsonForPersons(PersonServiceImpl personServiceImpl) {
@@ -61,7 +60,7 @@ public class aReadJsonForPersons {
     /**
      * Chargement des données JSON
      */
-    public void loadFile()  {
+    public void loadFile() {
         try {
             JSONParser jsonParser = new JSONParser();
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("./data.json");
@@ -85,22 +84,22 @@ public class aReadJsonForPersons {
      */
     public void initPerson() {
         if (persons != null) {
-            idCounter=1;
+            idCounter = 1;
             Iterator<JSONObject> iterator = persons.iterator();
             while (iterator.hasNext()) {
                 JSONObject person = iterator.next();
                 String firstName = (String) person.get("firstName");
                 String lastName = (String) person.get("lastName");
-                String city=(String) person.get("city");
-                String zip=(String) person.get("zip");
+                String city = (String) person.get("city");
+                String zip = (String) person.get("zip");
                 String phone = (String) person.get("phone");
                 String mail = (String) person.get("email");
                 String address = (String) person.get("address");
-                Person myPerson =new Person(idCounter,firstName, lastName, address,city,zip,phone,mail);
-                this.allPersons = new ArrayList<>();
-                allPersons.add(myPerson);
-                personServiceImpl.save(allPersons);
-                idCounter+=1;
+                Person myPerson = new Person(idCounter, firstName, lastName, address, city, zip, phone, mail);
+                this.allAbstractPeople = new ArrayList<>();
+                allAbstractPeople.add(myPerson);
+                personServiceImpl.save(allAbstractPeople);
+                idCounter += 1;
             }
 
             logger.info("Succes of loading Persons");

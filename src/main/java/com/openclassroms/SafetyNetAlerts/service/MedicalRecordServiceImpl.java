@@ -16,7 +16,7 @@ import java.util.List;
 //@Configuration
 //@ComponentScan("com.openclassroms.SafetyNetAlerts")
 
-public class MedicalRecordServiceImpl implements MedicalRecordService{
+public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 
     private MedicalRecordRepository medicalRecordRepository;
@@ -29,8 +29,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * Constructeur
      */
 
-    public MedicalRecordServiceImpl(MedicalRecordRepository medicalRecordRepository ) {
-        this.medicalRecordRepository=medicalRecordRepository;
+    public MedicalRecordServiceImpl(MedicalRecordRepository medicalRecordRepository) {
+        this.medicalRecordRepository = medicalRecordRepository;
     }
 
     /**
@@ -67,16 +67,16 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * Suppression d'un médical record et de la personne associée
      */
     @Override
-    public ResponseEntity deleteMedicalRecord(String firstName,String lastName) {
-        List<Person> persons = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
-        for(Person person:persons){
-            MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(person.getId());
+    public ResponseEntity deleteMedicalRecord(String firstName, String lastName) {
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        for (Person Person : abstractPeople) {
+            MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
             medicalRecordRepository.delete(medicalRecord);
         }
-        for(Person person:persons) {
-            personRepository.delete(person);
+        for (Person Person : abstractPeople) {
+            personRepository.delete(Person);
         }
-        if(persons!=null) {
+        if (abstractPeople != null) {
             logger.info("delete  medical record succeeded");
             return ResponseEntity.ok(personRepository);
         } else {
@@ -90,20 +90,22 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * mise à jour d'un médical record
      */
     @Override
-    public MedicalRecord updateMedicalRecord(String firstName,String lastName,MedicalRecord medicalRecordDetails) {
-        int personId=0;
+    public MedicalRecord updateMedicalRecord(String firstName, String lastName, MedicalRecord medicalRecordDetails) {
+        int personId = 0;
 
-        List<Person> persons=personRepository.findPersonByFirstNameAndLastName(firstName,lastName);
-        for(Person person:persons ) {
-            personId=person.getId();
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        for (Person Person : abstractPeople) {
+            personId = Person.getId();
         }
-        MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByIdPerson(personId);
-        medicalRecord.setIdPerson(personId);
+        MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(personId);
+        Person Person = new Person();
+        Person.setId(personId);
+        medicalRecord.setPerson(Person);
         medicalRecord.setBirthdate(medicalRecordDetails.getBirthdate());
         medicalRecord.setAllergies(medicalRecordDetails.getAllergies());
         medicalRecord.setMedications(medicalRecordDetails.getMedications());
-        final MedicalRecord updateMedicalRecord=medicalRecordRepository.save(medicalRecord);
-        if (updateMedicalRecord!=null) {
+        final MedicalRecord updateMedicalRecord = medicalRecordRepository.save(medicalRecord);
+        if (updateMedicalRecord != null) {
             logger.info("Update  medical record succeeded");
             return updateMedicalRecord;
         } else {
@@ -117,28 +119,26 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * ajout d'un médical record
      */
     @Override
-        public MedicalRecord save(String firstName, String lastName, MedicalRecord medicalRecordDetails) {
-        int id=0;
-        List<Person> persons=personRepository.findPersonByFirstNameAndLastName(firstName,lastName);
-        for(Person person:persons) {
-            id=person.getId();
+    public MedicalRecord save(String firstName, String lastName, MedicalRecord medicalRecordDetails) {
+        int id = 0;
+        List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
+        for (Person Person : abstractPeople) {
+            id = Person.getId();
         }
-        MedicalRecord medicalRecord=new MedicalRecord();
-        medicalRecord.setIdPerson(id);
+        MedicalRecord medicalRecord = new MedicalRecord();
+        Person Person = new Person();
+        Person.setId(id);
+        medicalRecord.setPerson(Person);
         medicalRecord.setBirthdate(medicalRecordDetails.getBirthdate());
         medicalRecord.setMedications(medicalRecordDetails.getMedications());
         medicalRecord.setAllergies(medicalRecordDetails.getAllergies());
-        final MedicalRecord saveMedicalRecord=medicalRecordRepository.save(medicalRecord);
-        if (saveMedicalRecord!=null) {
-            logger.info("create  medical record succeeded");
-            return saveMedicalRecord;
-
-        } else {
+        final MedicalRecord saveMedicalRecord = medicalRecordRepository.save(medicalRecord);
+        if (saveMedicalRecord == null) {
             logger.info("person not create");
-            return null;
         }
+        logger.info("create  medical record succeeded");
+        return saveMedicalRecord;
     }
-
 
 
 }

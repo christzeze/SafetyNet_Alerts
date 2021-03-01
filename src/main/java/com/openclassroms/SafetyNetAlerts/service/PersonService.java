@@ -1,5 +1,6 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
+import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
 import com.openclassroms.SafetyNetAlerts.model.*;
 import org.springframework.http.ResponseEntity;
 
@@ -10,7 +11,7 @@ public interface PersonService {
 
     Iterable<Person> listAllPersonns();
 
-    public Person save(Person person);
+    public Person save(Person Person);
 
     public Iterable<Person> save(List<Person> people);
 
@@ -19,7 +20,7 @@ public interface PersonService {
 
     public List<Child> getlistOfChildren(String address) throws ParseException;
 
-    public List<PersonInfosFull> getAllInformationsForPersonnAtAnAddress(String address);
+    public List<Person> getAllInformationsForPersonnAtAnAddress(String address);
 
     public List<Person> findPersonByAddress(String address);
 
@@ -27,5 +28,5 @@ public interface PersonService {
 
     public ResponseEntity deletePerson(String firstName,String lastName);
 
-    public ResponseEntity updatePerson(String firstName, String lastName, Person personDetails);
+    public ResponseEntity updatePerson(String firstName, String lastName, Person PersonDetails);
 }
