@@ -1,16 +1,13 @@
 package com.openclassroms.SafetyNetAlerts.util;
 
-import com.openclassroms.SafetyNetAlerts.model.FireStation;
-import com.openclassroms.SafetyNetAlerts.model.Personn;
-import com.openclassroms.SafetyNetAlerts.service.FireStationService;
-import com.openclassroms.SafetyNetAlerts.service.PersonService;
+import com.openclassroms.SafetyNetAlerts.model.Person;
+import com.openclassroms.SafetyNetAlerts.service.PersonServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class ReadJsonForPersons {
+public class aReadJsonForPersons {
     private JSONObject object;
     private JSONArray persons;
 
@@ -30,22 +27,22 @@ public class ReadJsonForPersons {
     /**
      * Liste des personnes de la base de données
      */
-    private List<Personn> allPersons;
+    private List<Person> allPersons;
 
     private int idCounter;
 
-    private PersonService personService;
+    private PersonServiceImpl personServiceImpl;
 
 
 
-    private ReadJsonForPersons(PersonService personService) {
-        this.personService=personService;
+    private aReadJsonForPersons(PersonServiceImpl personServiceImpl) {
+        this.personServiceImpl = personServiceImpl;
     }
 
     /**
      * Logger
      */
-    private static final Logger logger = LogManager.getLogger("ReadJsonForPersons");
+    private static final Logger logger = LogManager.getLogger("aReadJsonForPersons");
 
     @PostConstruct
     public void initDataHandlerJsonFile() throws IOException, ParseException {
@@ -99,10 +96,10 @@ public class ReadJsonForPersons {
                 String phone = (String) person.get("phone");
                 String mail = (String) person.get("email");
                 String address = (String) person.get("address");
-                Personn myPersonn=new Personn(idCounter,firstName, lastName, address,city,zip,phone,mail);
+                Person myPerson =new Person(idCounter,firstName, lastName, address,city,zip,phone,mail);
                 this.allPersons = new ArrayList<>();
-                allPersons.add(myPersonn);
-                personService.save(allPersons);
+                allPersons.add(myPerson);
+                personServiceImpl.save(allPersons);
                 idCounter+=1;
             }
 

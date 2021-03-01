@@ -1,44 +1,21 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
 import com.openclassroms.SafetyNetAlerts.model.MedicalRecord;
-import com.openclassroms.SafetyNetAlerts.repository.MedicalRecordRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Service
-public class MedicalRecordService {
+public interface MedicalRecordService {
 
-    private MedicalRecordRepository medicalRecordRepository;
+    public Iterable<MedicalRecord> listAllMedicalRecords();
 
-    /**
-     * Constructeur
-     */
-    public MedicalRecordService(MedicalRecordRepository medicalRecordRepository ) {
-        this.medicalRecordRepository=medicalRecordRepository;
-    }
+    public MedicalRecord save(MedicalRecord medicalRecord);
 
+    public Iterable<MedicalRecord> save(List<MedicalRecord> medicalRecords);
 
-    /**
-     * Liste des informations médicales dans la base
-     */
+    public ResponseEntity deleteMedicalRecord(String firstName,String lastName);
 
-    public Iterable<MedicalRecord> listAllMedicalRecords() {
-        return medicalRecordRepository.findAll();
-    }
+    public MedicalRecord updateMedicalRecord(String firstName, String lastName, MedicalRecord medicalRecordDetails);
 
-    /**
-     * Sauvegarde d'une information médicale dans la base
-     */
-    public MedicalRecord save(MedicalRecord medicalRecord) {
-        return medicalRecordRepository.save(medicalRecord);
-    }
-
-    /**
-     * Sauvegarde de toutes les informations médicales dans la base
-     */
-    public Iterable<MedicalRecord> save(List<MedicalRecord> medicalRecords) {
-        return medicalRecordRepository.saveAll(medicalRecords);
-
-    }
+    public MedicalRecord save(String firstName, String lastName, MedicalRecord medicalRecordDetails);
 }

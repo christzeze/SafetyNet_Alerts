@@ -1,16 +1,13 @@
 package com.openclassroms.SafetyNetAlerts.util;
 
 import com.openclassroms.SafetyNetAlerts.model.FireStation;
-import com.openclassroms.SafetyNetAlerts.model.Personn;
-import com.openclassroms.SafetyNetAlerts.service.FireStationService;
-import com.openclassroms.SafetyNetAlerts.service.PersonService;
+import com.openclassroms.SafetyNetAlerts.service.FireStationServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -22,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class ReadJsonForFireStations {
+public class cReadJsonForFireStations {
     private JSONObject object;
     private JSONArray fireStations;
 
@@ -34,18 +31,18 @@ public class ReadJsonForFireStations {
 
     private int idCounter;
 
-    private FireStationService fireStationService;
+    private FireStationServiceImpl fireStationServiceImpl;
 
 
 
-    private ReadJsonForFireStations(FireStationService fireStationService) {
-        this.fireStationService=fireStationService;
+    private cReadJsonForFireStations(FireStationServiceImpl fireStationServiceImpl) {
+        this.fireStationServiceImpl = fireStationServiceImpl;
     }
 
     /**
      * Logger
      */
-    private static final Logger logger = LogManager.getLogger("ReadJsonForFireStations");
+    private static final Logger logger = LogManager.getLogger("cReadJsonForFireStations");
 
     @PostConstruct
     public void initDataHandlerJsonFile() throws IOException, ParseException {
@@ -86,15 +83,17 @@ public class ReadJsonForFireStations {
     public void initFireStations() {
         if (this.fireStations != null) {
             idCounter=1;
+            ArrayList<String> listeStations = new ArrayList<String>();
             Iterator<JSONObject> iterator = fireStations.iterator();
             while (iterator.hasNext()) {
                 JSONObject fireStation = iterator.next();
                 String address = (String) fireStation.get("address");
                 String station = (String) fireStation.get("station");
-                FireStation myFireStation=new FireStation(idCounter,address, station);
+                int myStation=Integer.parseInt(station);
+                FireStation myFireStation=new FireStation(idCounter,address,myStation);
                 this.allFireStations = new ArrayList<>();
                 allFireStations.add(myFireStation);
-                fireStationService.save(allFireStations);
+                fireStationServiceImpl.save(allFireStations);
                 idCounter+=1;
             }
             logger.info("Succes of loading FireStations");

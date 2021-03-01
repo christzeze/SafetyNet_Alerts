@@ -1,43 +1,31 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
-import com.openclassroms.SafetyNetAlerts.model.FireStation;
-import com.openclassroms.SafetyNetAlerts.repository.FireStationRepository;
-import org.springframework.stereotype.Service;
+import com.openclassroms.SafetyNetAlerts.model.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Service
-public class FireStationService {
+public interface FireStationService {
 
-    private FireStationRepository fireStationRepository;
+    public Iterable<com.openclassroms.SafetyNetAlerts.model.FireStation> listAllFireStations();
 
-    /**
-     * Constructeur
-     */
-    public FireStationService(FireStationRepository fireStationRepository) {
-        this.fireStationRepository = fireStationRepository;
-    }
+    public com.openclassroms.SafetyNetAlerts.model.FireStation save(com.openclassroms.SafetyNetAlerts.model.FireStation fireStation);
 
-    /**
-     * Liste des stations incendie dans la base
-     */
-    public Iterable<FireStation> listAllFireStations() {
-        return fireStationRepository.findAll();
-    }
+    public Iterable<com.openclassroms.SafetyNetAlerts.model.FireStation> save(List<com.openclassroms.SafetyNetAlerts.model.FireStation> fireStations);
 
-    /**
-     * Sauvegarde d'une station incendie dans la base
-     */
-    public FireStation save(FireStation fireStation) {
-        return fireStationRepository.save(fireStation);
-    }
+    public FireStationCoverage getFireStationCoverage(int station);
 
-    /**
-     * Sauvegarde de toutes les stations incendie dans la base
-     */
-    public Iterable<FireStation> save(List<FireStation> fireStations) {
-        return fireStationRepository.saveAll(fireStations);
+    public List<PhoneCoverage> getPhoneNumbersByStation(int station);
 
-    }
+    public List<FireStationsFlood> getCoverageFireStationForSeveralFireStations(String stations);
+
+    public void deleteFireStationByStationNumber(int station);
+
+    public ResponseEntity deleteFireStationByAddress(String address);
+
+    public ResponseEntity updateFireStation(String station, FireStation fireStationDetails);
+
+
+
 
 }
