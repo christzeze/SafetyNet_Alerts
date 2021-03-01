@@ -1,4 +1,4 @@
-package com.openclassroms.SafetyNetAlerts.repository;
+package com.openclassroms.SafetyNetAlerts.config;
 
 import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.context.annotation.Bean;

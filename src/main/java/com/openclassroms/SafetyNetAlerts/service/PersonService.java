@@ -1,43 +1,32 @@
 package com.openclassroms.SafetyNetAlerts.service;
 
-import com.openclassroms.SafetyNetAlerts.model.Personn;
-import com.openclassroms.SafetyNetAlerts.repository.PersonnRepository;
-import org.springframework.stereotype.Service;
+import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
+import com.openclassroms.SafetyNetAlerts.model.*;
+import org.springframework.http.ResponseEntity;
 
+import java.text.ParseException;
 import java.util.List;
 
-@Service
-public class PersonService {
+public interface PersonService {
 
-    private PersonnRepository personnRepository;
+    Iterable<Person> listAllPersonns();
 
-    /**
-     * Constructeur
-     */
-    public PersonService(PersonnRepository personnRepository ) {
-        this.personnRepository=personnRepository;
-    }
+    public Person save(Person Person);
+
+    public Iterable<Person> save(List<Person> people);
 
 
-    /**
-     * Liste des personnes dans la base
-     */
-    public Iterable<Personn> listAllPersonns() {
-        return personnRepository.findAll();
-    }
+    public List<PersonInfos> getlistPersonsByFirstNameAndLastName(String firstName, String lastName);
 
-    /**
-     * Sauvegarde d'une personne dans la base
-     */
-    public Personn save(Personn personn) {
-        return personnRepository.save(personn);
-    }
+    public List<Child> getlistOfChildren(String address) throws ParseException;
 
-    /**
-     * Sauvegarde de toutes les personnes dans la base
-     */
-    public Iterable<Personn> save(List<Personn> personns) {
-        return personnRepository.saveAll(personns);
+    public List<Person> getAllInformationsForPersonnAtAnAddress(String address);
 
-    }
+    public List<Person> findPersonByAddress(String address);
+
+    public List<Email> getEmailPerCity(String city);
+
+    public ResponseEntity deletePerson(String firstName,String lastName);
+
+    public ResponseEntity updatePerson(String firstName, String lastName, Person PersonDetails);
 }
