@@ -8,6 +8,7 @@ class SafetyNetAlertsApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
