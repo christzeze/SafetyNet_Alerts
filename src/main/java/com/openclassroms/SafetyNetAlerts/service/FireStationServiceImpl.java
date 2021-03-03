@@ -30,7 +30,7 @@ public class FireStationServiceImpl implements FireStationService {
     private PersonServiceImpl personService;
 
     @Autowired
-    private CalculateAgeService calculateAgeService;
+    private CalculateAgeServiceImpl calculateAgeServiceImpl;
 
     //@Autowired
     //private FireStationRepositoryImpl fireStationRepositoryImpl;
@@ -143,8 +143,8 @@ public class FireStationServiceImpl implements FireStationService {
         for (Person Person : PersonByStation) {
             Person infoPersonFull = personService.getFullInformationPerson(Person);
             MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
-            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
-            if (calculateAgeService.isChild(medicalRecord)) {
+            int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
+            if (calculateAgeServiceImpl.isChild(medicalRecord)) {
                 childCounter += 1;
             } else {
                 adultCounter += 1;
@@ -226,7 +226,7 @@ public class FireStationServiceImpl implements FireStationService {
                     fireStationsFlood.setLastName(Person.getLastName());
                     fireStationsFlood.setAddress(Person.getAddress());
                     fireStationsFlood.setPhone(Person.getPhone());
-                    int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+                    int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
                     fireStationsFlood.setAge(age);
                     fireStationsFlood.setMedications(medicalRecord.getMedications());
                     fireStationsFlood.setAllergies(medicalRecord.getAllergies());

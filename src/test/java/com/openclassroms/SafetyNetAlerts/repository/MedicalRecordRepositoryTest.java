@@ -1,4 +1,4 @@
-package com.openclassroms.SafetyNetAlerts.Repository;
+package com.openclassroms.SafetyNetAlerts.repository;
 
 import com.openclassroms.SafetyNetAlerts.model.MedicalRecord;
 import com.openclassroms.SafetyNetAlerts.service.MedicalRecordServiceImpl;

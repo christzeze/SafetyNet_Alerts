@@ -9,11 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PersonRepository extends CrudRepository<Person, String> {
+public interface PersonRepository extends CrudRepository<Person, Integer> {
 
     List<Person> findPersonByFirstNameAndLastName(String firstName, String lastName);
 
     List<Person> findPersonByAddress(String address, Sort sort);
 
     List<Person> findPersonByCity(String city);
+
+    Person findPersonById(int id);
+
 }

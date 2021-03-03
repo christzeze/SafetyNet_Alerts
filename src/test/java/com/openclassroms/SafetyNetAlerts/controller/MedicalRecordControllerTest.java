@@ -1,4 +1,4 @@
-package com.openclassroms.SafetyNetAlerts.Controller;
+package com.openclassroms.SafetyNetAlerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassroms.SafetyNetAlerts.model.*;
@@ -18,8 +18,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.hamcrest.Matchers.is;
+
 
 
 @SpringBootTest
@@ -71,7 +70,7 @@ public class MedicalRecordControllerTest  {
                 .content(json))
                 .andDo(print())
                 .andExpect(status().isOk());
-                //.andExpect(jsonPath("$..birthdate").value("03/06/1984"));
+
     }
 
     @Test
@@ -90,7 +89,7 @@ public class MedicalRecordControllerTest  {
                 .content(json))
                 .andDo(print())
                 .andExpect(status().isOk());
-        //.andExpect(jsonPath("$..medications").value(36));
+
     }
 
     @Test
@@ -101,7 +100,7 @@ public class MedicalRecordControllerTest  {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-        //.andExpect(jsonPath("$..medications").value(36));
+
     }
 
 }

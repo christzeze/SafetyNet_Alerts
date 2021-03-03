@@ -46,12 +46,8 @@ public class aReadJsonForPersons {
     @PostConstruct
     public void initDataHandlerJsonFile() throws IOException, ParseException {
         this.loadFile();
-        if (object == null) {
-
-        } else {
-
+        if (object != null) {
             shareData(this.object);
-
             initPerson();
 
         }
@@ -74,7 +70,7 @@ public class aReadJsonForPersons {
 
     public void shareData(JSONObject obj) {
 
-        persons = (JSONArray) obj.get("persons");
+            persons = (JSONArray) obj.get("persons");
 
 
     }

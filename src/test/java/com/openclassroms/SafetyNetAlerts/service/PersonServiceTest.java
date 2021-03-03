@@ -34,7 +34,7 @@ public class PersonServiceTest {
     PersonServiceImpl personServiceImpl;
 
     @Autowired
-    CalculateAgeService calculateAgeService;
+    CalculateAgeServiceImpl calculateAgeServiceImpl;
 
     @MockBean
     private MedicalRecordServiceImpl medicalRecordServiceImpl2;

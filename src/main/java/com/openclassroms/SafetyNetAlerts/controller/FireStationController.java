@@ -32,8 +32,7 @@ public class FireStationController {
         return fireStationServiceImpl.listAllFireStations();
     }
 
-    //@GetMapping("/fireStation")
-    @RequestMapping(value="/fireStation", method=RequestMethod.GET)
+    @GetMapping("/fireStation")
     public FireStationCoverage listOfFireStationCoverage(@RequestParam(required = false) int stationNumber) {
         return fireStationServiceImpl.getFireStationCoverage(stationNumber);
     }

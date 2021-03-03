@@ -18,13 +18,14 @@ import java.util.List;
 @Service
 public class PersonServiceImpl implements PersonService {
 
+
     private PersonRepository personRepository;
 
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
     @Autowired
-    private CalculateAgeService calculateAgeService;
+    private CalculateAgeServiceImpl calculateAgeServiceImpl;
 
     @Autowired
     private FireStationRepository fireStationRepository;
@@ -99,25 +100,30 @@ public class PersonServiceImpl implements PersonService {
 
     }
 
+
     @Override
-    public ResponseEntity updatePerson(String firstName, String lastName, Person PersonDetails) {
+    public Person updatePerson(String firstName, String lastName, Person PersonDetails) {
+        Person updatePerson=new Person();
         List<Person> abstractPeople = personRepository.findPersonByFirstNameAndLastName(firstName, lastName);
-        Person updatePerson = null;
-        for (Person Person : abstractPeople) {
-            Person.setPhone(PersonDetails.getPhone());
-            Person.setAddress(PersonDetails.getAddress());
-            Person.setCity(PersonDetails.getCity());
-            Person.setEmail(PersonDetails.getEmail());
-            Person.setZip(PersonDetails.getZip());
-            updatePerson = personRepository.save(Person);
+
+        for (Person person : abstractPeople) {
+            person.setPhone(PersonDetails.getPhone());
+            person.setAddress(PersonDetails.getAddress());
+            person.setCity(PersonDetails.getCity());
+            person.setEmail(PersonDetails.getEmail());
+            person.setZip(PersonDetails.getZip());
+            updatePerson = personRepository.save(person);
         }
         if (updatePerson != null) {
             logger.info("person update");
-            return ResponseEntity.ok(personRepository);
+            //return ResponseEntity.ok(personRepository);
+            return updatePerson;
+
         } else {
             logger.info("person not update");
-            return ResponseEntity.badRequest()
-                    .body(personRepository);
+            return null;
+            //return ResponseEntity.badRequest()
+                   // .body(personRepository);
         }
     }
 
@@ -148,7 +154,7 @@ public class PersonServiceImpl implements PersonService {
                 logger.error("Person " + Person + " don't exist");
             }
 
-            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+            int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
 
             PersonInfos personInfos = new PersonInfos();
             personInfos.setFirstName(Person.getFirstName());
@@ -159,7 +165,9 @@ public class PersonServiceImpl implements PersonService {
             personInfos.setAge(age);
 
             for (FireStation a : stations) {
-                listStations.add(String.valueOf(a.getStation()));
+                if (!listStations.contains(String.valueOf(a.getStation()))) {
+                    listStations.add(String.valueOf(a.getStation()));
+                }
             }
 
             personInfos.setStation(listStations);
@@ -185,14 +193,13 @@ public class PersonServiceImpl implements PersonService {
 
         for (Person Person : abstractPeople) {
             MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
-            //MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
             if (medicalRecord == null) {
                 logger.error("Person " + Person + " don't exist");
             }
-            if (calculateAgeService.isAdult(medicalRecord)) {
+            if (calculateAgeServiceImpl.isAdult(medicalRecord)) {
                 adults.add(Person);
             } else {
-                int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+                int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
                 Child child = new Child();
                 child.setFirstName(Person.getFirstName());
                 child.setLastName(Person.getLastName());
@@ -218,13 +225,12 @@ public class PersonServiceImpl implements PersonService {
 
         for (Person Person : abstractPeople) {
             MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
-            //MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
             List<FireStation> fireStations = fireStationRepository.findStationByAddress(Person.getAddress());
 
 
             allergies = medicalRecord.getAllergies();
             medications = medicalRecord.getMedications();
-            int age = calculateAgeService.calculateAge(medicalRecord.getBirthdate());
+            int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
 
 
             Person personInfosFull = new Person();
@@ -266,7 +272,6 @@ public class PersonServiceImpl implements PersonService {
         result.setAddress(Person.getAddress());
         result.setPhone(Person.getPhone());
         result.setEmail(Person.getEmail());
-        //FireStation station=fireStationRepository.findStationByAddressForFireStation(person.getAddress());
         List<FireStation> fireStations = fireStationRepository.findStationByAddress(Person.getAddress());
 
         for (FireStation a : fireStations) {
@@ -275,18 +280,11 @@ public class PersonServiceImpl implements PersonService {
             }
         }
         result.setStation(listStations);
-        //result.setStation(fireStationServiceImpl.stationNumber(person.getAddress()));
-
-        //MedicalRecord medicalRecord = medicalRecordServiceImpl2.getMedicalRecords(person.getFirstName(),person.getLastName());
-        //List<MedicalRecord> medicalRecordList = medicalRecordRepository.findMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
-        //MedicalRecord medicalRecord= medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(), person.getLastName());
         MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
         if (medicalRecord != null) {
-            result.setAge(calculateAgeService.calculateAge(medicalRecord.getBirthdate()));
-            //for (MedicalRecord medicalRecord : medicalRecordList) {
+            result.setAge(calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate()));
             result.setAllergies(medicalRecord.getAllergies());
             result.setMedications(medicalRecord.getMedications());
-            //}
         }
 
         return result;

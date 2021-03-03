@@ -28,5 +28,7 @@ public interface PersonService {
 
     public ResponseEntity deletePerson(String firstName,String lastName);
 
-    public ResponseEntity updatePerson(String firstName, String lastName, Person PersonDetails);
+    public Person updatePerson(String firstName, String lastName, Person PersonDetails);
+
+
 }

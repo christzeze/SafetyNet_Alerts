@@ -47,13 +47,9 @@ public class cReadJsonForFireStations {
     @PostConstruct
     public void initDataHandlerJsonFile() throws IOException, ParseException {
         this.loadFile();
-        if (object == null) {
-        } else {
-
+        if (object != null) {
             shareData(this.object);
-
             initFireStations();
-
         }
     }
 

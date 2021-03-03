@@ -2,10 +2,12 @@ package com.openclassroms.SafetyNetAlerts.controller;
 
 import com.openclassroms.SafetyNetAlerts.dto.PersonInfos;
 import com.openclassroms.SafetyNetAlerts.model.*;
+import com.openclassroms.SafetyNetAlerts.repository.PersonRepository;
 import com.openclassroms.SafetyNetAlerts.service.PersonService;
 import com.openclassroms.SafetyNetAlerts.service.PersonServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +17,22 @@ import java.util.List;
 @RestController
 public class PersonController {
 
+    @Autowired
+    private PersonService personService;
+
     /**
      * Logger
      */
     private static final Logger logger = LogManager.getLogger("PersonServiceImpl");
 
-    private PersonService personService;
+
+
+
+    @Autowired
+    private PersonServiceImpl personServiceImpl;
+
+    @Autowired
+    private PersonRepository personRepository;
 
 
     private PersonController(PersonServiceImpl personService) {
@@ -61,7 +73,7 @@ public class PersonController {
     // add a person
     @PostMapping("/person")
     public ResponseEntity<Person> addPerson(@RequestBody Person abstractPerson) {
-        return ResponseEntity.ok(personService.save(abstractPerson));
+        return ResponseEntity.ok(personRepository.save(abstractPerson));
     }
 
     //delete a person
@@ -72,11 +84,15 @@ public class PersonController {
 
     }
 
-    // update a person
+     //update a person
     @PutMapping("/person")
-    public void UpdatePerson(@RequestBody Person abstractPersonDetails, @RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName) {
-        personService.updatePerson(firstName, lastName, abstractPersonDetails);
+
+    public ResponseEntity<Person> UpdatePerson(@RequestBody Person abstractPersonDetails, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        Person person=personService.updatePerson(firstName, lastName, abstractPersonDetails);
+        return ResponseEntity.ok(person);
+
     }
+
 
 }
 

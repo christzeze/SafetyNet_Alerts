@@ -29,7 +29,7 @@ public class FireStationServiceTest {
     PersonServiceImpl personServiceImpl;
 
     @Autowired
-    CalculateAgeService calculateAgeService;
+    CalculateAgeServiceImpl calculateAgeServiceImpl;
 
     @Autowired
     FireStationServiceImpl fireStationServiceImpl;

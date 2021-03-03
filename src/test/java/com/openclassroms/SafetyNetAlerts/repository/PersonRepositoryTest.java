@@ -1,4 +1,4 @@
-package com.openclassroms.SafetyNetAlerts.Repository;
+package com.openclassroms.SafetyNetAlerts.repository;
 
 import com.openclassroms.SafetyNetAlerts.model.Person;
 import com.openclassroms.SafetyNetAlerts.service.PersonServiceImpl;
@@ -9,7 +9,6 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void shouldReturn200WhenUpdate() {
+    public void shouldReturnFirstNameAndLastNameWhenUpdate() {
         //GIVEN
         String firstName="John";
         String lastName="Boyd";
@@ -52,11 +51,13 @@ public class PersonRepositoryTest {
         Person abstractPersonDetails =new Person(firstName,lastName);
 
         //WHEN
-        ResponseEntity responseEntity =personService.updatePerson(firstName,lastName, abstractPersonDetails);
-        int obj = responseEntity.getStatusCodeValue();
+        Person person=personService.updatePerson(firstName,lastName, abstractPersonDetails);
+
 
         //THEN
-        assertThat(obj).isEqualTo(200);
+        assertThat(person.getFirstName()).isEqualTo("John");
+        assertThat(person.getLastName()).isEqualTo("Boyd");
+
     }
 
 

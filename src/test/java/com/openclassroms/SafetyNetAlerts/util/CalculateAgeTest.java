@@ -1,6 +1,6 @@
 package com.openclassroms.SafetyNetAlerts.util;
 
-import com.openclassroms.SafetyNetAlerts.service.CalculateAgeService;
+import com.openclassroms.SafetyNetAlerts.service.CalculateAgeServiceImpl;
 import org.junit.jupiter.api.Tag;
 import org.junit.Test;
 //import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CalculateAgeTest {
 
     @Autowired
-    CalculateAgeService calculateAgeService;
+    CalculateAgeServiceImpl calculateAgeServiceImpl;
 
     @Tag("TestonmethodcalculateAge")
     @Test
@@ -33,7 +33,7 @@ public class CalculateAgeTest {
         LocalDate date=LocalDate.of(1984, 3, 6);
 
         // WHEN
-        int valeurAge = calculateAgeService.calculateAge(date);
+        int valeurAge = calculateAgeServiceImpl.calculateAge(date);
 
         //THEN
         assertThat(valeurAge).isEqualTo(36);

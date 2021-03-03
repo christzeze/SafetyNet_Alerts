@@ -1,4 +1,4 @@
-package com.openclassroms.SafetyNetAlerts.Controller;
+package com.openclassroms.SafetyNetAlerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassroms.SafetyNetAlerts.model.*;
@@ -138,7 +138,7 @@ public class FireStationControllerTest {
                 .content(json))
                 .andDo(print())
                 .andExpect(status().isOk());
-        //.andExpect(jsonPath("$..birthdate").value("03/06/1984"));
+
     }
 
     @Test
@@ -157,7 +157,7 @@ public class FireStationControllerTest {
                 .content(json))
                 .andDo(print())
                 .andExpect(status().isOk());
-        //.andExpect(jsonPath("$..birthdate").value("03/06/1984"));
+
     }
 
     @Test
@@ -169,6 +169,6 @@ public class FireStationControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-        //.andExpect(jsonPath("$..birthdate").value("03/06/1984"));
+
     }
 }
