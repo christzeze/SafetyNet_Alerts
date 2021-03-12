@@ -36,6 +36,6 @@ public class CalculateAgeTest {
         int valeurAge = calculateAgeServiceImpl.calculateAge(date);
 
         //THEN
-        assertThat(valeurAge).isEqualTo(36);
+        assertThat(valeurAge).isEqualTo(37);
     }
 }

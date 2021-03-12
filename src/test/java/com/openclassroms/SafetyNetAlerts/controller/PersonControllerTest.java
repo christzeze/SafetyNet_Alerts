@@ -150,7 +150,7 @@ public class PersonControllerTest {
     public void PersonController_shouldReturnStatusOkWhenSave() throws Exception {
         //GIVEN
 
-        Person abstractPerson = new Person("John", "Boyd");
+        Person abstractPerson = new Person("Jacques", "Martineaux");
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(abstractPerson);
@@ -162,8 +162,8 @@ public class PersonControllerTest {
                 .content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..firstName").value("John"))
-                .andExpect(jsonPath("$..lastName").value("Boyd"))
+                .andExpect(jsonPath("$..firstName").value("Jacques"))
+                .andExpect(jsonPath("$..lastName").value("Martineaux"))
                 .andReturn();
     }
 
@@ -171,7 +171,7 @@ public class PersonControllerTest {
     public void PersonController_shouldReturnStatusOkWhenUpdate() throws Exception {
         //GIVEN
 
-        Person abstractPerson = new Person(1,"John", "Boyd", "1509 Culver St", "ici", "97451", "841-874-6512", "jaboyd@email.com");
+        Person abstractPerson = new Person(1,"John", "Martineaux", "1509 Culver St", "ici", "97451", "841-874-6512", "jaboyd@email.com");
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(abstractPerson);
@@ -193,18 +193,9 @@ public class PersonControllerTest {
         verify(personServiceImpl,times(1)).updatePerson("John","Boyd",abstractPerson);
     }
 
-    @Test
-    public void PersonController_shouldReturnStatusOkWhenDelete() throws Exception {
-        //GIVEN
-
-        mockMvc.perform(delete("/person?firstName=John&lastName=Boyd")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
 
 
 
-    }
+
 
 }

@@ -28,8 +28,8 @@ public class PersonRepositoryTest {
     @Test
     public void shouldReturnFirstNameAndLastNameWhenSave() {
         //GIVEN
-        String firstName="John";
-        String lastName="Boyd";
+        String firstName="Jacques";
+        String lastName="Martineau";
 
         Person abstractPersonDetails =new Person(firstName,lastName);
 
@@ -37,8 +37,8 @@ public class PersonRepositoryTest {
         Person abstractPerson =personService.save(abstractPersonDetails);
 
         //THEN
-        assertThat(abstractPerson.getFirstName()).isEqualTo("John");
-        assertThat(abstractPerson.getLastName()).isEqualTo("Boyd");
+        assertThat(abstractPerson.getFirstName()).isEqualTo("Jacques");
+        assertThat(abstractPerson.getLastName()).isEqualTo("Martineau");
 
     }
 

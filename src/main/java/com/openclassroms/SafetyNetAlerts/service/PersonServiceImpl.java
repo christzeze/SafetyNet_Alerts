@@ -148,6 +148,8 @@ public class PersonServiceImpl implements PersonService {
         for (Person Person : abstractPeople) {
             MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
 
+
+
             List<FireStation> stations = fireStationRepository.findStationByAddress(Person.getAddress());
 
             if (medicalRecord == null) {
@@ -267,6 +269,7 @@ public class PersonServiceImpl implements PersonService {
         List<String> listStations = new ArrayList<>();
 
         Person result = new Person();
+        result.setId(Person.getId());
         result.setFirstName(Person.getFirstName());
         result.setLastName(Person.getLastName());
         result.setAddress(Person.getAddress());

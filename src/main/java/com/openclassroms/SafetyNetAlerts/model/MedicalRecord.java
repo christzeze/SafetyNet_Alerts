@@ -48,6 +48,7 @@ public class MedicalRecord {
         this.allergies = allergies;
     }
 
+
     public MedicalRecord(LocalDate birthdate) {
         this.birthdate = birthdate;
     }

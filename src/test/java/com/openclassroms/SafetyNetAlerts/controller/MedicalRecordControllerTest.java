@@ -63,7 +63,7 @@ public class MedicalRecordControllerTest  {
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(medicalRecord);
 
-        mockMvc.perform(post("/medicalRecord?firstName=John&lastName=Boyd")
+        mockMvc.perform(post("/medicalRecord?firstName=Jacques&lastName=Martineaux")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 //.content(new ObjectMapper().writeValueAsString(medicalRecord)))
@@ -83,7 +83,7 @@ public class MedicalRecordControllerTest  {
         String json = mapper.writeValueAsString(medicalRecord);
 
 
-        mockMvc.perform(put("/medicalRecord?firstName=John&lastName=Boyd")
+        mockMvc.perform(put("/medicalRecord?firstName=Jacques&lastName=Martineaux")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -92,15 +92,8 @@ public class MedicalRecordControllerTest  {
 
     }
 
-    @Test
-    public void MedicalRecordController_shouldReturnStatusOkWhenDelete() throws Exception {
 
-        mockMvc.perform(delete("/medicalRecord?firstName=John&lastName=Boyd")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
 
-    }
+
 
 }
