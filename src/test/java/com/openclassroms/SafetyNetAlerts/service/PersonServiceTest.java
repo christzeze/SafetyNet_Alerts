@@ -135,7 +135,7 @@ public class PersonServiceTest {
 
     @Tag("TestMethodgetlistPersonsByFirstNameAndLastName")
     @Test
-    void shouldReturnInformationsForAPerson() {
+    void shouldReturnInformationsForAPerson() throws Exception {
         //GIVEN
         String firstName="John";
         String lastName="Boyd";

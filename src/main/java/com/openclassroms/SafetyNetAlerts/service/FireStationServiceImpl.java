@@ -143,7 +143,6 @@ public class FireStationServiceImpl implements FireStationService {
         for (Person Person : PersonByStation) {
             Person infoPersonFull = personService.getFullInformationPerson(Person);
             MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
-            int age = calculateAgeServiceImpl.calculateAge(medicalRecord.getBirthdate());
             if (calculateAgeServiceImpl.isChild(medicalRecord)) {
                 childCounter += 1;
             } else {
@@ -220,7 +219,6 @@ public class FireStationServiceImpl implements FireStationService {
                 List<Person> PersonByAddresses = personRepository.findPersonByAddress(fireStation.getAddress(), Sort.by("address"));
                 for (Person Person : PersonByAddresses) {
                     MedicalRecord medicalRecord = medicalRecordRepository.findFirstMedicalRecordByPersonId(Person.getId());
-                    //MedicalRecord medicalRecord=medicalRecordRepository.findFirstMedicalRecordByFirstNameAndLastName(person.getFirstName(),person.getLastName());
                     FireStationsFlood fireStationsFlood = new FireStationsFlood();
                     fireStationsFlood.setFirstName(Person.getFirstName());
                     fireStationsFlood.setLastName(Person.getLastName());
